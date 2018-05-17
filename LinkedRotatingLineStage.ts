@@ -138,3 +138,27 @@ class LRLNode {
         return this
     }
 }
+
+class LinkedRotatingLine  {
+
+    curr : LRLNode = new LRLNode(0)
+
+    dir : number = 1
+
+    draw(context : CanvasRenderingContext2D) {
+        this.curr.draw(context)
+    }
+
+    update(stopcb : Function) {
+        this.curr.update(() => {
+            this.curr = this.curr.getNext(this.dir, () => {
+                this.dir *= -1
+            })
+            stopcb()
+        })
+    }
+
+    startUpdating(startcb : Function) {
+        this.curr.startUpdating(startcb)
+    }
+}
