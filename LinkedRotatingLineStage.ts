@@ -60,12 +60,12 @@ class State {
     update(stopcb : Function) {
         this.scales[this.j] += this.dir * 0.1
         if (Math.abs(this.scales[this.j] - this.prevScale) > 1) {
-            this.prevScale = this.scales[this.j] + this.dir
+            this.scales[this.j] = this.prevScale + this.dir
             this.j += this.dir
             if (this.j == this.scales.length || this.j == -1) {
                 this.j -= this.dir
                 this.dir = 0
-                this.scales[this.j] = this.prevScale + this.dir
+                this.prevScale = this.scales[this.j] + this.dir
                 stopcb()
             }
         }
@@ -127,11 +127,11 @@ class LRLNode {
         context.lineWidth = size/15
         context.lineCap = 'round'
         context.save()
-        context.translate(size, this.state.j * size)
+        context.translate(this.i * size + size, this.i * size + this.state.j * size)
         context.rotate(-(Math.PI/2) * (1 - this.state.j) * this.state.scales[0] + (Math.PI/2) * this.state.scales[1] * this.state.j)
         context.beginPath()
-        context.moveTo(size * this.state.j, 0)
-        context.lineTo(size, size * (1 - this.state.j))
+        context.moveTo(- size + size * this.state.j, -size * this.state.j)
+        context.lineTo(0, 0)
         context.stroke()
         context.restore()
     }
