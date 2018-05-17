@@ -83,3 +83,58 @@ class Animator {
         }
     }
 }
+
+class LRLNode {
+
+    next : LRLNode
+
+    prev : LRLNode
+
+    state : State = new State()
+
+    constructor(private i : number) {
+        this.addNeighbor()
+    }
+
+    addNeighbor() {
+        if (this.i < LRL_NODES - 1) {
+            this.next = new LRLNode(this.i + 1)
+            this.next.prev = this
+        }
+    }
+
+    draw(context : CanvasRenderingContext2D) {
+        const size : number = Math.min(w, h) / LRL_NODES
+        context.strokeStyle = '#2ecc71'
+        context.lineWidth = size/15
+        context.lineCap = 'round'
+        context.save()
+        context.translate(size, this.state.j * size)
+        context.rotate(-(Math.PI/2) * (1 - this.state.j) * this.state.scales[0] + (Math.PI/2) * this.state.scales[1] * this.state.j)
+        context.beginPath()
+        context.moveTo(size * this.state.j, 0)
+        context.lineTo(size, size * (1 - this.state.j))
+        context.stroke()
+        context.restore()
+    }
+
+    update(stopcb : Function) {
+        this.state.update(stopcb)
+    }
+
+    startUpdating(startcb : Function) {
+        this.state.startUpdating(startcb)
+    }
+
+    getNext(dir : number, cb : Function) {
+        var curr : LRLNode = this.prev
+        if (dir == 1) {
+            curr = this.next
+        }
+        if (curr) {
+            return curr
+        }
+        cb()
+        return this
+    }
+}
