@@ -39,6 +39,12 @@ class LinkedRotatingStepStage {
             })
         }
     }
+
+    static init() {
+        const stage : LinkedRotatingStepStage = new LinkedRotatingStepStage()
+        stage.render()
+        stage.handleTap()
+    }
 }
 
 class State {
