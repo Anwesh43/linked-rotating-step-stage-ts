@@ -1,10 +1,14 @@
 const w : number = window.innerWidth, h : number = window.innerHeight, LRL_NODES = 5
 
-class LinkedRotatingLineStage {
+class LinkedRotatingStepStage {
 
     canvas : HTMLCanvasElement = document.createElement('canvas')
 
     context : CanvasRenderingContext2D
+
+    animator : Animator = new Animator()
+
+    lrlStep : LinkedRotatingStep = new LinkedRotatingStep()
 
     constructor() {
         this.initCanvas()
@@ -17,14 +21,22 @@ class LinkedRotatingLineStage {
         document.body.appendChild(this.canvas)
     }
 
-    draw(context) {
+    render() {
         this.context.fillStyle = '#212121'
         this.context.fillRect(0, 0, w, h)
+        this.lrlStep.draw(this.context)
     }
 
     handleTap() {
         this.canvas.onmousedown = () => {
-
+            this.lrlStep.startUpdating(() => {
+                this.animator.start(() => {
+                    this.render()
+                    this.lrlStep.update(() => {
+                        this.animator.stop()
+                    })
+                })
+            })
         }
     }
 }
@@ -139,7 +151,7 @@ class LRLNode {
     }
 }
 
-class LinkedRotatingLine  {
+class LinkedRotatingStep  {
 
     curr : LRLNode = new LRLNode(0)
 
